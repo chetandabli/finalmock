@@ -1,0 +1,106 @@
+*{
+    margin: 0;
+    padding: 0;   
+}
+
+#login{
+    display: grid;
+    grid-template-columns: repeat(2, 2fr);
+    height: 100vh;
+    gap: 25px;
+    padding: 50px;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+form{
+    width: 100%;
+    margin: auto;
+    padding: 25px;
+    background-color: blueviolet;
+    width: fit-content;
+    border-radius: 10px;
+}
+form>h1{
+    text-align: center;
+    color: blanchedalmond;
+}
+
+input{
+    display: block;
+    padding: 7px 5px;
+    outline: none;
+    user-select: none;
+    border: none;
+    background-color: antiquewhite;
+    box-sizing: border-box;
+    margin: 8px 0;
+}
+
+input::placeholder{
+    padding: 5px;
+    font-size: 16px;
+}
+
+#submit{
+    border-radius: 5px;
+    padding: 5px 15px;
+    background-color: rgb(150, 240, 150);
+    cursor: pointer;
+}
+#submit:hover{
+    background-color: rgb(114, 255, 114);
+}
+#ssubmit{
+    border-radius: 5px;
+    padding: 5px 15px;
+    background-color: rgb(235, 152, 207);
+    cursor: pointer;
+}
+#ssubmit:hover{
+    background-color: rgb(253, 121, 209);
+}
+
+#chataap{
+    display: block;
+}
+#top{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 50px;
+    padding: 0 25px;
+    background-color: blueviolet;
+    box-sizing: border-box;
+}
+
+#logout{
+    border-radius: 5px;
+    padding: 5px 15px;
+    background-color: rgb(235, 152, 207);
+    cursor: pointer;
+}
+#logout:hover{
+    background-color: rgb(218, 0, 145)
+}
+
+#remainchat{
+    display: grid;
+    grid-template-columns: repeat(3, 3fr);
+    width: 100%;
+    height: calc(100vh - 50px);
+}
+#fntlist{
+    background-color: antiquewhite;
+    border: 1px solid rgb(194, 194, 194);
+}
+#chatbox{
+    background-color: antiquewhite;
+    border: 1px solid rgb(194, 194, 194);
+}
+#explorefnds{
+    background-color: antiquewhite;
+    border: 1px solid rgb(194, 194, 194);
+}

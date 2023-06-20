@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="login">
+        <div id="loginbox">
+            <form id="loginform">
+                <h1>Login</h1>
+                <input type="email" name="email" id="email" placeholder="Email">
+                <input type="password" name="password" id="password" placeholder="Password">
+                <input type="submit" name="submit" id="submit">
+            </form>
+        </div>
+        <div id="signupbox">
+            <form id="signupform">
+                <h1>Signup</h1>
+                <input type="text" name="name" id="sname" placeholder="Name">
+                <input type="email" name="email" id="semail" placeholder="Email">
+                <input type="password" name="password" id="spassword" placeholder="Password">
+                <input type="submit" name="submit" id="ssubmit">
+            </form>
+        </div>
+    </div>
+    <div id="chataap">
+        <div id="top">
+            <div>
+                <h4 id="nameofuser"></h4>
+                <h6 id="emailofuser"></h6>
+            </div>
+            <button id="logout">Logout</button>
+        </div>
+        <div id="remainchat">
+            <div id="fntlist"></div>
+            <div id="chatbox"></div>
+            <div id="explorefnds"></div>
+        </div>
+    </div>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script>
+        let token = localStorage.getItem("token") || null;
+        let baseURL = "http://localhost:3000/"
+        let logout = document.getElementById("logout");
+        let loginform = document.getElementById("loginform")
+        let signupform = document.getElementById("signupform")
+        // checking if user is logged in or not
+        if(!token){
+            document.getElementById("login").style.display = "grid";
+            document.getElementById("chataap").style.display = "none";
+            localStorage.removeItem("name")
+            localStorage.removeItem("email")
+        }else{
+            document.getElementById("login").style.display = "none";
+            document.getElementById("chataap").style.display = "block";
+            document.getElementById("nameofuser").innerText = localStorage.getItem("name");
+            document.getElementById("emailofuser").innerText = localStorage.getItem("email");
+            
+        }
+
+
+        signupform.onsubmit = async(e)=>{
+                e.preventDefault();
+
+                // singup code
+                if(signupform.email.value != "" && signupform.password.value != "" && signupform.name.value != ""){
+                    let obj = {
+                        "name": signupform.name.value,
+                        "email": signupform.email.value,
+                        "password": signupform.password.value
+                    }
+
+                    let res = await fetch(`${baseURL}api/signup`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(obj)
+                    });
+                    console.log(res)
+                    res = await res.json();
+
+                    alert(res.msg);
+                    signupform.name.value = "";
+                    signupform.password.value = "";
+                    signupform.name.value = "";
+                    localStorage.removeItem("token")
+                    localStorage.removeItem("name")
+                    localStorage.removeItem("email")
+                }else{
+                    alert("Please Fill all Details")
+                }
+            }
+
+            // login code
+            loginform.onsubmit = async(e)=>{
+                e.preventDefault();
+
+                if(loginform.email.value != "" && loginform.password.value != ""){
+                    let obj = {
+                        "email": loginform.email.value,
+                        "password": loginform.password.value
+                    }
+
+                    let res = await fetch(`${baseURL}api/login`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(obj)
+                    });
+
+                    res = await res.json();
+
+                    alert(res.msg);
+
+                    if(res.msg == "User Logged In."){
+                        document.getElementById("login").style.display = "none";
+                        document.getElementById("chataap").style.display = "block";
+                        localStorage.setItem("token", res.token)
+                        localStorage.setItem("name", res.name)
+                        localStorage.setItem("email", res.email)
+                        document.getElementById("nameofuser").innerText = localStorage.getItem("name")
+                        document.getElementById("emailofuser").innerText = localStorage.getItem("email")
+                    }else{
+                        localStorage.removeItem("token")
+                        localStorage.removeItem("name")
+                        localStorage.removeItem("email")
+                    }
+                }else{
+                    alert("Please Fill all Details")
+                }
+            }
+        
+            var socket = io();
+            socket.emit('live', {"email": localStorage.getItem("email"), "name": localStorage.getItem("name"), "token": localStorage.getItem("token")});
+
+            socket.on("liveuserdata", (data)=>{
+                console.log(data)
+            })
+            socket.on("notlogged", (data)=>{
+                localStorage.removeItem("token")
+                localStorage.removeItem("name")
+                localStorage.removeItem("email")
+                document.getElementById("login").style.display = "grid";
+                document.getElementById("chataap").style.display = "none";
+            })
+
+        logout.onclick = ()=>{
+            socket.emit("logout", true);
+            localStorage.removeItem("token")
+            localStorage.removeItem("name")
+            localStorage.removeItem("email")
+            document.getElementById("login").style.display = "grid";
+            document.getElementById("chataap").style.display = "none";
+        }
+
+        socket.on("out", ()=>{
+            localStorage.removeItem("token")
+            localStorage.removeItem("name")
+            localStorage.removeItem("email")
+            document.getElementById("login").style.display = "grid";
+            document.getElementById("chataap").style.display = "none";
+        })
+        
+    </script>
+</body>
+</html>
